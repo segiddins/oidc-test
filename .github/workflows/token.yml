@@ -15,20 +15,26 @@ jobs:
         with:
           debug: true
           script: |
-            const token = process.env['ACTIONS_RUNTIME_TOKEN']
-            const runtimeUrl = process.env['ACTIONS_ID_TOKEN_REQUEST_URL']
-            core.setOutput('TOKEN', token.trim())
-            core.setOutput('IDTOKENURL', runtimeUrl.trim())
-      - run: |
-          IDTOKEN=$(curl -H "Authorization: bearer  ${{steps.script.outputs.TOKEN}}" ${{steps.script.outputs.IDTOKENURL}}  -H "Accept: application/json; api-version=2.0" -H "Content-Type: application/json" -d "{}" | jq -r '.value')
-          echo $IDTOKEN
-          echo $IDTOKEN | rev
-          jwtd() {
-              if [[ -x $(command -v jq) ]]; then
-                  jq -R 'split(".") | .[0],.[1] | @base64d | fromjson' <<< "${1}"
-                  echo "Signature: $(echo "${1}" | awk -F'.' '{print $3}')"
-              fi
-          }
-          jwtd $IDTOKEN
-          echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
-        id: tokenid
+            const webIdentityToken = await core.getIDToken('https://oidc-api-token.rubygems.org');
+            const http = new httpm.HttpClient('oidc-test');
+            const res = await http.post(
+              'https://oidc-api-token.rubygems.org/api/v1/oidc/api_key_roles/1/assume_role',
+              JSON.stringify({"jwt": webIdentityToken}),
+              {
+                'content-type': 'application/json',
+                'accept': 'application/json'
+              }
+            )
+            const string = await res.readBody()
+            const obj = JSON.parse(body)
+            const rubygemsApiKey = obj['rubygems_api_key'];
+            core.exportVariable('RUBYGEMS_API_KEY', rubygemsApiKey);
+            core.setSecret(rubygemsApiKey);
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2.1"
+          bundler-cache: true
+      - name: Release
+        run: bundle exec rake release
