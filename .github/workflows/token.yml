@@ -16,17 +16,18 @@ jobs:
           debug: true
           script: |
             const webIdentityToken = await core.getIDToken('https://oidc-api-token.rubygems.org');
-            const http = new httpm.HttpClient('oidc-test');
-            const res = await http.post(
+            const res = await fetch(
               'https://oidc-api-token.rubygems.org/api/v1/oidc/api_key_roles/1/assume_role',
-              JSON.stringify({"jwt": webIdentityToken}),
               {
-                'content-type': 'application/json',
-                'accept': 'application/json'
+                method: "post",
+                body: JSON.stringify({"jwt": webIdentityToken}),
+                headers: {
+                  'content-type': 'application/json',
+                  'accept': 'application/json'
+                }
               }
             )
-            const string = await res.readBody()
-            const obj = JSON.parse(body)
+            const obj = await res.json();
             const rubygemsApiKey = obj['rubygems_api_key'];
             core.exportVariable('RUBYGEMS_API_KEY', rubygemsApiKey);
             core.setSecret(rubygemsApiKey);
