@@ -2,7 +2,7 @@ on:
   - push
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -48,6 +48,11 @@ jobs:
             core.exportVariable('RUBYGEMS_API_KEY', rubygemsApiKey);
             core.setSecret(rubygemsApiKey);
       - uses: actions/checkout@v3
+      - name: Set remote URL
+        run: |
+          git config --global user.email "$(git log -1 --pretty=format:'%ae')"
+          git config --global user.name "$(git log -1 --pretty=format:'%an')"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
