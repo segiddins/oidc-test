@@ -65,4 +65,5 @@ jobs:
       - name: Release
         env:
           BUNDLE_GEM__PUSH_KEY: ${{ env.RUBYGEMS_API_KEY }}
+          GEM_HOST_API_KEY: ${{ env.RUBYGEMS_API_KEY }}
         run: bundle exec rake release
