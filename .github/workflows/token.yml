@@ -17,7 +17,7 @@ jobs:
           script: |
             const webIdentityToken = await core.getIDToken('https://oidc-api-token.rubygems.org');
             const res = await fetch(
-              'https://oidc-api-token.rubygems.org/api/v1/oidc/api_key_roles/1/assume_role',
+              'https://oidc-api-token.rubygems.org/api/v1/oidc/api_key_roles/2/assume_role',
               {
                 method: "post",
                 body: JSON.stringify({"jwt": webIdentityToken}),
