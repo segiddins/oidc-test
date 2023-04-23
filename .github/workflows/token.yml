@@ -9,61 +9,21 @@ jobs:
   job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
-        id: script
-        timeout-minutes: 10
+      - uses: rubygems/configure-rubygems-credentials@main
         with:
-          debug: true
-          script: |
-            const webIdentityToken = await core.getIDToken('https://oidc-api-token.rubygems.org');
-            const res = await fetch(
-              'https://oidc-api-token.rubygems.org/api/v1/oidc/api_key_roles/2/assume_role',
-              {
-                method: "post",
-                body: JSON.stringify({"jwt": webIdentityToken}),
-                headers: {
-                  'content-type': 'application/json',
-                  'accept': 'application/json'
-                }
-              }
-            )
-            class HTTPResponseError extends Error {
-              constructor(response) {
-                super(`HTTP Error Response: ${response.status} ${response.statusText}`);
-                this.response = response;
-              }
-            }
-
-            const checkStatus = response => {
-              if (response.ok) {
-                // response.status >= 200 && response.status < 300
-                return response;
-              } else {
-                throw new HTTPResponseError(response);
-              }
-            }
-            checkStatus(res);
-            const obj = await res.json();
-            const rubygemsApiKey = obj['rubygems_api_key'];
-            core.exportVariable('RUBYGEMS_API_KEY', rubygemsApiKey);
-            core.setSecret(rubygemsApiKey);
+          role-to-assume: 2
+          gem-server: "https://oidc-api-token.rubygems.org"
+          audience: "https://oidc-api-token.rubygems.org"
       - uses: actions/checkout@v3
       - name: Set remote URL
         run: |
           git config --global user.email "$(git log -1 --pretty=format:'%ae')"
           git config --global user.name "$(git log -1 --pretty=format:'%an')"
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
-          mkdir -p $HOME/.gem
-          touch $HOME/.gem/credentials
-          chmod 0600 $HOME/.gem/credentials
-          printf -- "---\n:rubygems_api_key: ${RUBYGEMS_API_KEY}\n" > $HOME/.gem/credentials
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.2.1"
           bundler-cache: true
       - name: Release
-        env:
-          BUNDLE_GEM__PUSH_KEY: ${{ env.RUBYGEMS_API_KEY }}
-          GEM_HOST_API_KEY: ${{ env.RUBYGEMS_API_KEY }}
         run: bundle exec rake release
