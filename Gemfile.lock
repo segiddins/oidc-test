@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oidc-test (0.2.0)
+    oidc-test (0.2.1)
 
 GEM
   remote: https://rubygems.org/
