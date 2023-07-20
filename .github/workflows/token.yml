@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: rubygems/configure-rubygems-credentials@main
         with:
-          role-to-assume: 2
+          role-to-assume: rg_oidc_akr_af3qvswoz4sa1xqv48sc
           gem-server: "https://oidc-api-token.rubygems.org"
           audience: "https://oidc-api-token.rubygems.org"
       - uses: actions/checkout@v3
