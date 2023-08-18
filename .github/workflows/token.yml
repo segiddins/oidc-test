@@ -40,3 +40,5 @@ jobs:
           bundler-cache: true
       - name: Release
         run: bundle exec rake release
+        env:
+          TAG_PREFIX: "${{ matrix.roleToken }}-"
