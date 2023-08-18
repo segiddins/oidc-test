@@ -4,15 +4,28 @@ on:
 jobs:
   job:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        roleToken:
+          - ""
+        gem-server:
+          - "https://rubygems.org"
+        include:
+          - roleToken: rg_oidc_akr_af3qvswoz4sa1xqv48sc
+            gem-server: "https://oidc-api-token.rubygems.org"
+          - roleToken: rg_oidc_akr_zsrkdgeq83dodvvs2qvx
+            gem-server: "https://staging.rubygems.org"
+        exclude:
+          - roleToken: ""
     permissions:
       contents: write
       id-token: write
     steps:
       - uses: rubygems/configure-rubygems-credentials@main
         with:
-          role-to-assume: rg_oidc_akr_af3qvswoz4sa1xqv48sc
-          gem-server: "https://oidc-api-token.rubygems.org"
-          audience: "https://oidc-api-token.rubygems.org"
+          role-to-assume: ${{ matrix.roleToken }}
+          gem-server: ${{ matrix.gem-server }}
       - uses: actions/checkout@v3
       - name: Set remote URL
         run: |
