@@ -26,6 +26,7 @@ jobs:
         with:
           role-to-assume: ${{ matrix.roleToken }}
           gem-server: ${{ matrix.gem-server }}
+          audience: ${{ matrix.gem-server }}
       - uses: actions/checkout@v3
       - name: Set remote URL
         run: |
