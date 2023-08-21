@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         roleToken:
-          - "rg_oidc_akr_af3qvswoz4sa1xqv48sc"
+          - "rg_oidc_akr_wdk2j3ghyoq72dxv1o8e"
         gem-server:
           - "https://rubygems.org"
         include:
