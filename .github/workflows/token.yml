@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         roleToken:
-          - ""
+          - "rg_oidc_akr_af3qvswoz4sa1xqv48sc"
         gem-server:
           - "https://rubygems.org"
         include:
@@ -16,8 +16,6 @@ jobs:
             gem-server: "https://oidc-api-token.rubygems.org"
           - roleToken: rg_oidc_akr_zsrkdgeq83dodvvs2qvx
             gem-server: "https://staging.rubygems.org"
-        exclude:
-          - roleToken: ""
     permissions:
       contents: write
       id-token: write
