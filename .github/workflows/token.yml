@@ -1,8 +1,10 @@
 on:
-  - push
+  push:
+    branches:
+      - main
 
 jobs:
-  job:
+  api-key-role:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -41,3 +43,37 @@ jobs:
         env:
           TAG_PREFIX: "${{ matrix.roleToken }}-"
           GEM_HOST: "${{ matrix.gem-server }}"
+
+  trusted-publisher:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        gem-server:
+          - "oidc-api-token.rubygems.org"
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: rubygems/configure-rubygems-credentials@segiddins/support-trusted-publishers
+        with:
+          gem-server: "https://${{ matrix.gem-server }}"
+          audience: ${{ matrix.gem-server }}
+          trusted-publisher: true
+      - uses: actions/checkout@v3
+      - name: Set remote URL
+        run: |
+          git config --global user.email "$(git log -1 --pretty=format:'%ae')"
+          git config --global user.name "$(git log -1 --pretty=format:'%an')"
+          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2.1"
+          bundler-cache: true
+      - name: Release
+        run: bundle exec rake release
+        env:
+          TAG_PREFIX: "trusted-publisher/${{ matrix.gem-server }}-"
+          GEM_HOST: "https://${{ matrix.gem-server }}"
+          GEMSPEC_NAME: "oidc-test-trusted_publisher"
