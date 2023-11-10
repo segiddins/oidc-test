@@ -72,7 +72,7 @@ jobs:
           ruby-version: "3.2.1"
           bundler-cache: true
       - name: Release
-        run: bundle exec rake release
+        run: rake release
         env:
           TAG_PREFIX: "trusted-publisher/${{ matrix.gem-server }}-"
           GEM_HOST: "https://${{ matrix.gem-server }}"
