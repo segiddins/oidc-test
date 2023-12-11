@@ -3,7 +3,7 @@
 require_relative "lib/oidc/test/version"
 
 Gem::Specification.new do |spec|
-  spec.name = ENV.fetch("GEMSPEC_NAME") { "oidc-test" }
+  spec.name = ENV.fetch("GEMSPEC_NAME", "oidc-test")
   spec.version = Oidc::Test::VERSION
   spec.authors = ["Samuel Giddins"]
   spec.email = ["segiddins@segiddins.me"]
