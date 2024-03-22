@@ -70,8 +70,8 @@ jobs:
         with:
           ruby-version: "3.2.1"
           bundler-cache: true
-      - name: Build
-        run: rake build
+      - name: Release
+        run: rake release
         env:
           TAG_PREFIX: "trusted-publisher/${{ matrix.gem-server }}-"
           GEM_HOST: "https://${{ matrix.gem-server }}"
@@ -80,13 +80,7 @@ jobs:
         uses: sigstore/gh-action-sigstore-python@v2.1.1
         with:
           inputs: |
-            pkg/*.gem 
-      - name: Release
-        run: rake release
-        env:
-          TAG_PREFIX: "trusted-publisher/${{ matrix.gem-server }}-"
-          GEM_HOST: "https://${{ matrix.gem-server }}"
-          GEMSPEC_NAME: "oidc-test-trusted_publisher"
+            pkg/*.gem
       - name: GitHub Release
         uses: softprops/action-gh-release@v2
         with:
