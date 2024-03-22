@@ -87,4 +87,4 @@ jobs:
           files: |
             pkg/*.gem
             pkg/*.sigstore
-          tag_name: ${{ env.TAG_PREFIX }}${{ github.sha }}
+          tag_name: "trusted-publisher/${{ matrix.gem-server }}-${{ github.sha }}"
