@@ -76,16 +76,11 @@ jobs:
           TAG_PREFIX: "trusted-publisher/${{ matrix.gem-server }}-"
           GEM_HOST: "https://${{ matrix.gem-server }}"
           GEMSPEC_NAME: "oidc-test-trusted_publisher"
-      - name: Find .gem
-        uses: tj-actions/glob@v21
-        id: glob
-        with:
-          files: |
-            pkg/*.gem
       - name: Sign
         uses: sigstore/gh-action-sigstore-python@v2.1.1
         with:
-          inputs: ${{ steps.glob.outputs.paths}}
+          inputs: |
+            pkg/*.gem 
       - name: Release
         run: rake release
         env:
