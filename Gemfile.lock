@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oidc-test (0.7.9)
+    oidc-test (0.8.0)
 
 GEM
   remote: https://rubygems.org/
@@ -54,4 +54,4 @@ DEPENDENCIES
   rubocop (~> 1.21)
 
 BUNDLED WITH
-   2.4.19
+   2.5.10
