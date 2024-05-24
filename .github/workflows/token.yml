@@ -53,6 +53,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      attestations: write
     steps:
       - uses: rubygems/configure-rubygems-credentials@main
         with:
@@ -76,15 +77,15 @@ jobs:
           TAG_PREFIX: "trusted-publisher/${{ matrix.gem-server }}-"
           GEM_HOST: "https://${{ matrix.gem-server }}"
           GEMSPEC_NAME: "oidc-test-trusted_publisher"
-      - name: Sign
-        uses: sigstore/gh-action-sigstore-python@v2.1.1
+      - name: Attest
+        id: attest
+        uses: actions/attest-build-provenance@v1
         with:
-          inputs: |
-            pkg/*.gem
+          subject-path: "${{ github.workspace }}/pkg/*.gem"
       - name: GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             pkg/*.gem
-            pkg/*.sigstore
+            ${{ steps.attest.outputs.bundle-path }}
           tag_name: "trusted-publisher/${{ matrix.gem-server }}-${{ github.sha }}"
