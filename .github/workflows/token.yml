@@ -36,7 +36,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2.1"
+          ruby-version: "3.3.5"
           bundler-cache: true
       - name: Release
         run: bundle exec rake release
@@ -73,7 +73,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2.1"
+          ruby-version: "3.3.5"
           bundler-cache: true
       - name: Release
         run: rake release
