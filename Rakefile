@@ -9,6 +9,7 @@ module Bundler
         super
 
         task "release:attest" => "build" do
+          Bundler.ui.confirm "Attesting? #{attest?}"
           attest if attest?
         end
 
@@ -39,6 +40,7 @@ module Bundler
     end
 
     def attest
+      Bundler.ui.confirm "Signing #{@build_gem_path}..."
       sh [Gem.ruby, "-S", "gem", "install", "sigstore"]
       sh [Gem.ruby, "-rnet/http", "-rsigstore", "-rsigstore/signer", "-e", <<~RUBY, @build_gem_path]
         file = ARGV.first
