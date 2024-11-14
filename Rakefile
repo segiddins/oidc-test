@@ -27,7 +27,7 @@ module Bundler
         cmd = [{ "RUBYOPT" => "-r#{File.expand_path("tasks/rubygems_patch.rb", __dir__)} #{ENV["RUBYOPT"]}",
                  "gem_attestation_path" => "#{path}.sigstore.json" }, *gem_command, "push", path]
         cmd << "--key" << gem_key if gem_key
-        cmd << "--host" << gem_push_host if gem_push_host
+        cmd << "--host" << allowed_push_host if allowed_push_host
         sh_with_input(cmd)
         Bundler.ui.confirm "Pushed #{name} #{version} to #{gem_push_host}"
       end
