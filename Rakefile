@@ -53,7 +53,9 @@ module Bundler
         contents = File.binread(file)
         bundle = Sigstore::Signer.new(jwt:, trusted_root: Sigstore::TrustedRoot.production).sign(contents)
 
-        File.binwrite("#{file}.sigstore.json", bundle.to_json)
+        json = "\#{file}.sigstore.json"
+        File.binwrite(file, bundle.to_json)
+        puts "Signed \#{file}, wrote \#{json}"
       RUBY
     end
   end
