@@ -41,7 +41,7 @@ module Bundler
     end
 
     def attest
-      sh [Gem.ruby, "-rnet/http", "-rsigstore", "-rsigstore/signer", "-e", <<~RUBY, @build_gem_path]
+      sh [Gem.ruby, "-rbundler/setup", "-rnet/http", "-rsigstore", "-rsigstore/signer", "-e", <<~RUBY, @build_gem_path]
         file = ARGV.first
         jwt = Net::HTTP.get_response(
           URI(ENV.fetch("ACTIONS_ID_TOKEN_REQUEST_URL") + "&audience=sigstore"),
