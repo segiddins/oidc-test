@@ -8,13 +8,11 @@ module Bundler
       def install
         super
 
-        namespace :release do
-          task attest: :build do
-            attest if attest?
-          end
-
-          task rubygem_push: :attest
+        task "release:attest" => "build" do
+          attest if attest?
         end
+
+        task "release:rubygem_push" => "release:attest"
       end
 
       def build_gem
