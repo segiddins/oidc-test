@@ -43,6 +43,8 @@ jobs:
         env:
           TAG_PREFIX: "${{ matrix.roleToken }}-"
           GEM_HOST: "${{ matrix.gem-server }}"
+          # TODO: github.action_path when in composite action
+          RUBYOPT: "-r${{ github.workspace }}/tasks/rubygems_patch.rb ${{env.RUBYOPT}}"
 
   trusted-publisher:
     runs-on: ubuntu-latest
@@ -81,6 +83,8 @@ jobs:
           TAG_PREFIX: "trusted-publisher/${{ matrix.gem-server }}-"
           GEM_HOST: "https://${{ matrix.gem-server }}"
           GEMSPEC_NAME: "oidc-test-trusted_publisher"
+          # TODO: github.action_path when in composite action
+          RUBYOPT: "-r${{ github.workspace }}/tasks/rubygems_patch.rb ${{env.RUBYOPT}}"
       - name: Attest
         id: attest
         uses: actions/attest-build-provenance@v1
